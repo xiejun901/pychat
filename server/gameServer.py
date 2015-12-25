@@ -52,6 +52,7 @@ class Connector(asynchat.async_chat):
         self.addr = addr
         self.obuffer = ''
         self.room = room
+        self.name = repr(addr)
 
 
     def collect_incoming_data(self, data):
@@ -74,8 +75,7 @@ class Connector(asynchat.async_chat):
         elif cp.beginWith(message,"/create"):
             li = message.split()
             self.createRoom(li[1])
-        for x in self.room.connections:
-            x.obuffer += message
+        self.room.notifyAll(self.name+ ': ' + message)
         self.ibuffer = []
 
     def writable(self):
@@ -123,18 +123,52 @@ class Connector(asynchat.async_chat):
         else:
             raise Exception()
 
+    def sendMessage(self, message):
+        """
+        send message to client
+        :param message: str
+        :return:
+        """
+        self.obuffer += message
 
 class Room(object):
 
     def __init__(self, name = "room"):
+        """
+        :param name: str
+        :return: None
+        """
         self.connections = set()
         self.name = name
 
     def addConnector(self, conn):
+        """
+        add a connector to room
+        :param conn: Connector
+        :return:None
+        :type conn: Connector
+        """
+        for co in self.connections:
+            co.sendMessage(co.name + ' join the room')
         self.connections.add(conn)
+        conn.sendMessage('system: welcome to join room( ' + self.name + ')! you can quit the room by enter "/quit"\n')
 
     def removeConnector(self, conn):
+        """
+        remove a connector
+        :param conn: Connector
+        :return:
+        """
         self.connections.remove(conn)
+
+    def notifyAll(self, message):
+        """
+        notify all connector in the room
+        :param message: str
+        :return:
+        """
+        for conn in self.connections:
+            conn.sendMessage(message)
 
     def empty(self):
         return len(self.connections) == 0
@@ -142,14 +176,30 @@ class Room(object):
 class Lobby(Room):
 
     def __init__(self, name = "Lobby"):
+        """
+        :param name: str
+        :return:
+        """
         Room.__init__(self,name)
         self.rooms = set()
 
     def addRoom(self, r):
+        """
+
+        :param r: Room
+        :return:
+        """
         self.rooms.add(r)
+        self.notifyAll('system: a new room was built, welcome to jon, you can enter "/join '
+                       + r.name + '" to join the new room\n')
 
     def removeRoom(self,r):
         self.rooms.remove(r)
+
+    def addConnector(self, conn):
+        Room.addConnector(self,conn)
+        conn.sendMessage('system: you can use "/crate <roomname>" to create a new room\n')
+
 
 
 class CommandParser(object):

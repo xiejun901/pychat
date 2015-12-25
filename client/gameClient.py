@@ -50,6 +50,7 @@ class SenderClient(asyncore.dispatcher):
         if data is not None:
             print data
 
+
 class CommandLineClient(asyncore.file_dispatcher):
 
     def __init__(self, cli, file):
