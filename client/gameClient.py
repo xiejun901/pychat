@@ -47,8 +47,10 @@ class SenderClient(asyncore.dispatcher):
 
     def handle_read(self):
         data = self.recv(8192)
-        if data is not None:
+        if data:
             print data
+        else:
+            self.close()
 
 
 class CommandLineClient(asyncore.file_dispatcher):
