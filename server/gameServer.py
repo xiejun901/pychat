@@ -5,6 +5,8 @@ import asynchat
 import socket
 import logging
 import config
+from accountInfo import AccountInfo
+import time
 
 connections = []
 
@@ -36,7 +38,7 @@ class Accepter(asyncore.dispatcher):
         if pair is not None:
             sock, addr = pair
             logger.info("new connection from %s", repr(addr))
-            gh = Connector(sock, addr, lobby)
+            gh = Connector(sock, addr)
 
     def handle_close(self):
         logger.info("connect closed")
@@ -44,13 +46,13 @@ class Accepter(asyncore.dispatcher):
 
 class Connector(asynchat.async_chat):
 
-    def __init__(self, sock, addr, room):
+    def __init__(self, sock, addr):
         asynchat.async_chat.__init__(self, sock=sock)
         self.set_terminator('/n/r/n/r')
         self.ibuffer = []
         self.addr = addr
         self.obuffer = ''
-        self.room = room
+        self.room = None
         self.name = None
 
 
@@ -70,24 +72,38 @@ class Connector(asynchat.async_chat):
         message = ''.join(self.ibuffer)
         self.ibuffer = []
         cp = CommandParser()
-        if self.name is None:
-            # not login
-            self.sendMessage('system: you can log in by input "/login <account> <password>"')
-        elif cp.beginWith(message,"/quit"):
-            self.close()
-            self.quitRoom()
-        elif cp.beginWith(message,"/create"):
-            li = message.split()
-            self.createRoom(li[1])
-        elif cp.beginWith(message, "/login"):
-            li = message.split()
-            if(self.checkUserCount(li[1], li[2])):
-                self.name = li[1]
-                lobby.addConnector(self)
-            else:
-                self.sendMessage('system: please check your in put account and password')
+        if cp.beginWith(message, '/CREATE'):
+            pass
+        elif cp.beginWith(message, '/SIGNIN'):
+            self.signIN(message)
+        elif cp.beginWith(message, '/SIGNOUT'):
+            self.signOut(message)
+        elif cp.beginWith(message, '/CHAT'):
+            pass
+        elif cp.beginWith(message, '/CHATALL'):
+            pass
+        elif cp.beginWith(message, '/CHATTO'):
+            pass
         else:
-            self.room.notifyAll(self.name + ': ' + message)
+            pass
+        # if self.name is None:
+        #     # not login
+        #     self.sendMessage('system: you can log in by input "/login <account> <password>"')
+        # elif cp.beginWith(message,"/quit"):
+        #     self.close()
+        #     self.quitRoom()
+        # elif cp.beginWith(message,"/create"):
+        #     li = message.split()
+        #     self.createRoom(li[1])
+        # elif cp.beginWith(message, "/login"):
+        #     li = message.split()
+        #     if(self.checkUserCount(li[1], li[2])):
+        #         self.name = li[1]
+        #         lobby.addConnector(self)
+        #     else:
+        #         self.sendMessage('system: please check your in put account and password')
+        # else:
+        #     self.room.notifyAll(self.name + ': ' + message)
 
 
     def writable(self):
@@ -141,6 +157,35 @@ class Connector(asynchat.async_chat):
         else:
             return False
 
+    def signIN(self, message):
+        """
+        :param message: str
+        :return:
+        :type message: str
+        """
+        li = message.split(' ', 2)
+        if len(li) < 3:
+            self.sendMessage('system: wrong account or password')
+            return
+        accountName = li[1]
+        passWord = li[2]
+        if (accountName in userCount and userCount[accountName].PassWord == passWord):
+            userCount[accountName].connection = self
+            userCount[accountName].logInTime = time.time()
+            lobby.addAccount(userCount[accountName])
+            self.name = accountName
+        else:
+            self.sendMessage('system: wrong account or password')
+
+    def signOut(self, message):
+        """
+        sign out
+        :param message: str
+        :return:
+        """
+        accInfo = userCount[self.name]
+        accInfo.room.removeAccount(accInfo)
+
 
     def sendMessage(self, message):
         """
@@ -159,35 +204,63 @@ class Room(object):
         """
         self.connections = set()
         self.name = name
+        self.accounts = {}
 
-    def addConnector(self, conn):
+    def addAccount(self, accountInfo):
         """
-        add a connector to room
-        :param conn: Connector
-        :return:None
-        :type conn: Connector
+        :param accountInfo:
+        :return:
+        :type accountName: string
+        :type accountInfo: AccountInfo
         """
-        for co in self.connections:
-            co.sendMessage(co.name + ' join the room')
-        self.connections.add(conn)
-        conn.sendMessage('system: welcome to join room( ' + self.name + ')! you can quit the room by enter "/quit"\n')
+        accountName = accountInfo.accountName
+        for accInfo in self.accounts.values():
+            accInfo.connection.sendMessage(accountName + ' join the room')
+        self.accounts[accountName] = accountInfo
+        accountInfo.room = self
+        accountInfo.connection.sendMessage('system: welcome to join room( ' + self.name + ')! you can quit the room by enter "/quit"\n')
 
-    def removeConnector(self, conn):
+    def removeAccount(self, accountInfo):
         """
-        remove a connector
-        :param conn: Connector
+
+        :param accountInfo:
         :return:
         """
-        self.connections.remove(conn)
+        accountInfo.room = None
+        accountInfo.connection = None
+        accountInfo.onLineTime += time.time() - accountInfo.logInTime
+        del self.accounts[accountInfo.accountName]
+        for accInfo in self.accounts.values():
+            accInfo.connection.sendMessage(accountInfo.accountName + ' quit the room\n')
 
-    def notifyAll(self, message):
-        """
-        notify all connector in the room
-        :param message: str
-        :return:
-        """
-        for conn in self.connections:
-            conn.sendMessage(message)
+    # def addConnector(self, conn):
+    #     """
+    #     add a connector to room
+    #     :param conn: Connector
+    #     :return:None
+    #     :type conn: Connector
+    #     """
+    #     for co in self.connections:
+    #         co.sendMessage(co.name + ' join the room')
+    #     self.connections.add(conn)
+    #     conn.sendMessage('system: welcome to join room( ' + self.name + ')! you can quit the room by enter "/quit"\n')
+    #
+    # def removeConnector(self, conn):
+    #     """
+    #     remove a connector
+    #     :param conn: Connector
+    #     :return:
+    #     """
+    #     self.connections.remove(conn)
+
+    # def notifyAll(self, message):
+    #     """
+    #     notify all connector in the room
+    #     :param message: str
+    #     :return:
+    #     """
+    #     for conn in self.connections:
+    #         conn.sendMessage(message)
 
     def empty(self):
         return len(self.connections) == 0
@@ -236,9 +309,9 @@ class CommandParser(object):
 
 if __name__ == '__main__':
     userCount = {
-        'netease1' : '123',
-        'netease2' : '123',
-        'netease3' : '123'
+        'netease1' : AccountInfo('netease1', '123'),
+        'netease2' : AccountInfo('netease1', '123'),
+        'netease3' : AccountInfo('netease1', '123'),
     }
     lobby = Lobby()
     logger = logConfig(True)

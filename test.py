@@ -1,4 +1,5 @@
 __author__ = 'xiejun'
+import time
 
 class Widget(object):
 
@@ -16,14 +17,4 @@ class Widget(object):
 
 
 
-w1 = Widget('xiejun')
-w2 = Widget('zhuwne')
-w3 = Widget('xiejun')
-
-print w1 == w2
-
-m = {}
-m[w1] = 1
-m[w2] = 2
-m[w3] = 3
-print(m)
+print time.time()
