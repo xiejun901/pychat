@@ -52,7 +52,6 @@ class Connector(asynchat.async_chat):
         self.ibuffer = []
         self.addr = addr
         self.obuffer = ''
-        self.room = None
         self.name = None
 
 
@@ -78,7 +77,7 @@ class Connector(asynchat.async_chat):
             self.signIN(message)
         elif cp.beginWith(message, '/SIGNOUT'):
             self.signOut(message)
-        elif cp.beginWith(message, '/CHAT'):
+        elif cp.beginWith(message, '/CHATROOM'):
             pass
         elif cp.beginWith(message, '/CHATALL'):
             pass
@@ -86,24 +85,6 @@ class Connector(asynchat.async_chat):
             pass
         else:
             pass
-        # if self.name is None:
-        #     # not login
-        #     self.sendMessage('system: you can log in by input "/login <account> <password>"')
-        # elif cp.beginWith(message,"/quit"):
-        #     self.close()
-        #     self.quitRoom()
-        # elif cp.beginWith(message,"/create"):
-        #     li = message.split()
-        #     self.createRoom(li[1])
-        # elif cp.beginWith(message, "/login"):
-        #     li = message.split()
-        #     if(self.checkUserCount(li[1], li[2])):
-        #         self.name = li[1]
-        #         lobby.addConnector(self)
-        #     else:
-        #         self.sendMessage('system: please check your in put account and password')
-        # else:
-        #     self.room.notifyAll(self.name + ': ' + message)
 
 
     def writable(self):
@@ -121,35 +102,6 @@ class Connector(asynchat.async_chat):
         '''
         logger.info('connection closed from %s', repr(self.addr))
         self.close()
-
-
-    def quitRoom(self):
-        self.room.removeConnector(self)
-        self.obuffer += ("you are quit room from" + self.room.name)
-        if isinstance(self.room, Lobby):
-            self.close()
-        elif isinstance(self.room, Room):
-            if(self.room.empty()):
-                lobby.removeRoom(self.room)
-            self.room = lobby
-            lobby.addConnector(self)
-        else:
-            raise Exception()
-
-    def createRoom(self, rname):
-        self.room.removeConnector(self)
-        self.room = Room(rname)
-        self.room.addConnector(self)
-        lobby.addRoom(self.room)
-        self.obuffer += ("you created a room named " + rname + " and enter the new room")
-
-    def joinRoom(self, rname):
-        if(isinstance(self.room,Lobby)):
-            pass
-        elif(isinstance(self.room, Room)):
-            self.obuffer += ("you are in a room, you must quit the room to the lobby and enter a new room")
-        else:
-            raise Exception()
 
     def checkUserCount(self, name, password):
         if (name in userCount and userCount[name] == password):
@@ -176,6 +128,15 @@ class Connector(asynchat.async_chat):
             self.name = accountName
         else:
             self.sendMessage('system: wrong account or password')
+
+    def chatRoom(self, message):
+        """
+        chat to room
+        :param message:
+        :return:
+        """
+        li = message.split(' ', 1)
+        room = userCount[self.name]
 
     def signOut(self, message):
         """
@@ -315,5 +276,5 @@ if __name__ == '__main__':
     }
     lobby = Lobby()
     logger = logConfig(True)
-    gameServer = Accepter(config.serverip, config.serverport)
+    gameServer = Accepter(config.SERVER_IP, config.SERVER_PORT)
     asyncore.loop()
