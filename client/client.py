@@ -38,7 +38,8 @@ class Connector(event_loop.Event):
 
     def handle_expt_event(self):
         data = self.sock.recv(1, socket.MSG_OOB)
-        self.heat_beat_cnt = 0
+        print 'recieve oob'
+        self.heart_beat_cnt = 0
 
     def close(self):
         self.loop.remove_event(self)
@@ -72,6 +73,7 @@ class HeartBeat(event_loop.TaskTimer):
         self.conn.sock.send('c', socket.MSG_OOB)
         self.conn.heart_beat_cnt += 1
         if(self.conn.heart_beat_cnt > self.heart_beat_max):
+            print 'heart bad'
             self.conn.close()
 
 
