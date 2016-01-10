@@ -32,7 +32,7 @@ class EventLoop(object):
                     r.append(fileno)
                 if(obj.writable()):
                     w.append(fileno)
-                if(obj.writable() and obj.readable):
+                if(obj.exptable()):
                     e.append(fileno)
             r, w, e = select.select(r, w, e, timeout)
             for fileno in r:

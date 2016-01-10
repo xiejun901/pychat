@@ -74,5 +74,4 @@ import  fcntl
 
 import sys
 
-x = '12345'
-print x[:-1]
+sock = socket

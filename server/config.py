@@ -2,7 +2,7 @@ __author__ = 'xiejun'
 
 import time
 # the server address
-SERVER_IP = 'localhost'
+SERVER_IP = '0.0.0.0'
 
 # the listen port
 SERVER_PORT = 8080

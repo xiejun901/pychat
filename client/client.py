@@ -4,6 +4,7 @@ import socket
 import event_loop
 import config
 import sys
+import time
 class Connector(event_loop.Event):
 
     def __init__(self, host, port, loop):
@@ -13,6 +14,7 @@ class Connector(event_loop.Event):
         self.sock.setblocking(0)
         self.buffer = ''
         self.loop = loop
+        self.heat_beat_cnt = 0
 
     def readable(self):
         return True
@@ -21,7 +23,7 @@ class Connector(event_loop.Event):
         return len(self.buffer) >0
 
     def exptable(self):
-        return False
+        return True
 
     def handle_write_event(self):
         sent = self.sock.send(self.buffer)
@@ -33,6 +35,10 @@ class Connector(event_loop.Event):
             print data
         else:
             self.close()
+
+    def handle_expt_event(self):
+        data = self.sock.recv(1, socket.MSG_OOB)
+        self.heat_beat_cnt = 0
 
     def close(self):
         self.loop.remove_event(self)
@@ -55,6 +61,20 @@ class CommandLineClient(event_loop.Event):
     def writable(self):
         return False
 
+class HeartBeat(event_loop.TaskTimer):
+
+    def __init__(self, conn, expires, period, heart_beat_timeout):
+        event_loop.TaskTimer.__init__(self, expires, period)
+        self.conn = conn
+        self.heart_beat_max = heart_beat_timeout
+
+    def callback(self, current):
+        self.conn.sock.send('c', socket.MSG_OOB)
+        self.conn.cnt += 1
+        if(self.conn.cnt > self.heart_beat_max):
+            self.conn.close()
+
+
 
 def main():
     loop = event_loop.EventLoop()
@@ -62,6 +82,7 @@ def main():
     cmdline = CommandLineClient(connector, sys.stdin, loop)
     loop.add_event(connector)
     loop.add_event(cmdline)
+    loop.add_timer(HeartBeat(connector, time.time()+3, 3))
     loop.loop()
 
 if __name__ == '__main__':

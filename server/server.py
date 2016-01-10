@@ -49,7 +49,9 @@ def main():
         ))
         first_expires = time.mktime(t2)
     game_timer = Game21Timer(first_expires, config.GAME21_PERIOD, config.GAME21_DUARATION)
+    heart_beat_timer = HeartBeat(time.time(), 3, 10)
     available_timers.append(game_timer)
+    available_timers.append(heart_beat_timer)
     try:
         # start the event loop
         loop.loop()
@@ -83,6 +85,7 @@ class Connector(object):
         self.ibuffer = []
         # record the username and mask is this connection has sign in
         self.name = None
+        self.heart_beat_cnt = 0
 
     def handle_read_event(self):
         data = self.sock.recv(1024)
@@ -103,13 +106,19 @@ class Connector(object):
         self.obuffer = self.obuffer[sent:]
 
     def handle_expt_event(self):
-        logger.info("handle expt event")
+        data = self.sock.recv(1,socket.MSG_OOB)
+        logger.info('recieve oob data %s', data)
+        self.sock.send(data, socket.MSG_OOB)
+        self.heart_beat_cnt = 0
 
     def readable(self):
         return True
 
     def writable(self):
         return len(self.obuffer) > 0
+
+    def exptable(self):
+        return True
 
     def close(self):
         logger.info("close connector %s", repr(self.sock.getpeername()))
@@ -290,6 +299,12 @@ class Connector(object):
             return name in connectors
         return self.name is not None
 
+    def check_heart_beat(self, heart_beat_max):
+        self.heart_beat_cnt += 1
+        if (self.heart_beat_cnt > heart_beat_max):
+            self.sign_out()
+            self.close()
+
 
 
 class Accpter(object):
@@ -318,6 +333,9 @@ class Accpter(object):
     def writable(self):
         return False
 
+    def exptable(self):
+        return True
+
 
 class EventLoop(object):
     """
@@ -341,7 +359,7 @@ class EventLoop(object):
                     r.append(fileno)
                 if(obj.writable()):
                     w.append(fileno)
-                if(obj.writable() and obj.readable):
+                if(obj.exptable()):
                     e.append(fileno)
             r, w, e = select.select(r, w, e, config.SELECT_TIME_OUT)
             for fileno in r:
@@ -525,6 +543,18 @@ class Room(object):
             conn = connectors.get(username)
             if conn is not None:
                 conn.send_message(message)
+
+
+class HeartBeat(TaskTimer):
+
+    def __init__(self, expires, period, heart_beat_max):
+        TaskTimer.__init__(self, expires, period)
+        self.heart_beat_max = heart_beat_max
+
+    def callback(self, current):
+        for _, connector in connectors.items():
+            connector.check_heart_beat(self.heart_beat_max)
+
 
 if __name__ == '__main__':
     main()
