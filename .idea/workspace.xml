@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="507fd372-a798-4e57-b1cb-7bf875bc6983" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/createDB.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/server.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/userInfomation.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/client.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/client/event_loop.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/userinformation.db" afterPath="$PROJECT_DIR$/server/userinformation.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/config.py" afterPath="$PROJECT_DIR$/server/config.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/gameServer.py" afterPath="$PROJECT_DIR$/server/gameServer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/gameClient.py" afterPath="$PROJECT_DIR$/client/gameClient.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/server.py" afterPath="$PROJECT_DIR$/server/server.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test.py" afterPath="$PROJECT_DIR$/test.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -22,9 +24,11 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/pythonChat$server.coverage" NAME="server Coverage Results" MODIFIED="1452208198898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/pythonChat$server.coverage" NAME="server Coverage Results" MODIFIED="1452377142848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/pythonChat$event_loop.coverage" NAME="event_loop Coverage Results" MODIFIED="1452363895978" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/pythonChat$gameClient.coverage" NAME="gameClient Coverage Results" MODIFIED="1451268374421" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
-    <SUITE FILE_PATH="coverage/pythonChat$test.coverage" NAME="test Coverage Results" MODIFIED="1452181075281" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pythonChat$test.coverage" NAME="test Coverage Results" MODIFIED="1452365163282" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pythonChat$client.coverage" NAME="client Coverage Results" MODIFIED="1452377153586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/pythonChat$gameServer.coverage" NAME="gameServer Coverage Results" MODIFIED="1451228905275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
     <SUITE FILE_PATH="coverage/pythonChat$userInfomation.coverage" NAME="userInfomation Coverage Results" MODIFIED="1452092603523" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
     <SUITE FILE_PATH="coverage/pythonChat$test_timer_file.coverage" NAME="test_timer_file Coverage Results" MODIFIED="1452152149630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -42,17 +46,7 @@
         <entry file="file://$PROJECT_DIR$/client/gameClient.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="39" column="21" selection-start-line="39" selection-start-column="21" selection-end-line="39" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="gameServer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/gameServer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+              <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
               <folding>
                 <element signature="e#23#38#0" expanded="true" />
               </folding>
@@ -60,21 +54,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="asyncore.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/lib/python2.7/asyncore.py">
+      <file leaf-file-name="gameServer.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/gameServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.457143">
-              <caret line="55" column="25" selection-start-line="55" selection-start-column="25" selection-end-line="55" selection-end-column="25" />
+            <state vertical-scroll-proportion="0.37406483">
+              <caret line="62" column="11" selection-start-line="62" selection-start-column="11" selection-end-line="62" selection-end-column="11" />
+              <folding>
+                <element signature="e#23#38#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/server.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/server/server.py">
+      <file leaf-file-name="event_loop.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/event_loop.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.68430656">
-              <caret line="265" column="25" selection-start-line="265" selection-start-column="25" selection-end-line="265" selection-end-column="25" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
               <folding>
                 <element signature="e#22#35#0" expanded="true" />
               </folding>
@@ -82,11 +88,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client/config.py">
+      <file leaf-file-name="client.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/client.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="43" column="24" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+              <folding>
+                <element signature="e#23#36#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="socket.py" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/lib/python2.7/socket.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="216" column="53" selection-start-line="216" selection-start-column="53" selection-end-line="216" selection-end-column="53" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="client.log" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client/client.log">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -96,24 +124,14 @@
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="63" column="38" selection-start-line="63" selection-start-column="38" selection-end-line="63" selection-end-column="38" />
+              <caret line="77" column="11" selection-start-line="77" selection-start-column="11" selection-end-line="77" selection-end-column="11" />
               <folding>
                 <element signature="e#22#33#0" expanded="true" />
-                <marker date="1452181075275" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
-                <marker date="1452181075275" expanded="true" signature="495:550" placeholder="insert into ..." />
-                <marker date="1452181075275" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
-                <marker date="1452181075275" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
+                <marker date="1452365161661" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
+                <marker date="1452365161661" expanded="true" signature="495:550" placeholder="insert into ..." />
+                <marker date="1452365161661" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
+                <marker date="1452365161661" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="createDB.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/createDB.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -122,58 +140,18 @@
         <entry file="file://$PROJECT_DIR$/server/config.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.log" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/server.log">
+      <file leaf-file-name="accountInfo.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/accountInfo.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+              <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="userInfomation.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/userInfomation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="37" column="32" selection-start-line="37" selection-start-column="32" selection-end-line="37" selection-end-column="32" />
-              <folding>
-                <element signature="e#22#36#0" expanded="true" />
-                <marker date="1452092598704" expanded="true" signature="285:314" placeholder="DROP TABLE I..." />
-                <marker date="1452092598704" expanded="true" signature="332:728" placeholder="CREATE TABLE..IF..." />
-                <marker date="1452092598704" expanded="true" signature="828:901" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="828:907" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="828:924" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="828:925" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="828:926" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="828:931" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="828:958" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="828:963" placeholder="INSERT INTO ..." />
-                <marker date="1452092598704" expanded="true" signature="1112:1158" placeholder="SELECT passw..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="1112:1159" placeholder="SELECT passw..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="1112:1163" placeholder="SELECT passw..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="1112:1164" placeholder="SELECT passw..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="1112:1175" placeholder="SELECT passw..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="1372:1432" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="1372:1434" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="1372:1437" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="1644:1704" placeholder="SELECT signI..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="1644:1709" placeholder="SELECT signI..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="2054:2086" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="2054:2087" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="2054:2106" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="2054:2111" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="2054:2133" placeholder="UPDATE userI..." />
-                <marker date="1452092598704" expanded="true" signature="2272:2325" placeholder="SELECT onLin..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="2510:2562" placeholder="SELECT usern..userInfo..." />
-                <marker date="1452092598704" expanded="true" signature="3288:3310" placeholder="SELECT * FRO..userInfo..." />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -195,15 +173,18 @@
       <list>
         <option value="$PROJECT_DIR$/server/Room.py" />
         <option value="$PROJECT_DIR$/server/room.py" />
-        <option value="$PROJECT_DIR$/client/gameClient.py" />
         <option value="$PROJECT_DIR$/server/AccountInfo.py" />
         <option value="$PROJECT_DIR$/server/accountInfo.py" />
         <option value="$PROJECT_DIR$/server/gameServer.py" />
         <option value="$PROJECT_DIR$/server/createDB.py" />
         <option value="$PROJECT_DIR$/server/userInfomation.py" />
         <option value="$PROJECT_DIR$/test_timer_file.py" />
-        <option value="$PROJECT_DIR$/server/config.py" />
+        <option value="$PROJECT_DIR$/server/event_loop.py" />
+        <option value="$PROJECT_DIR$/client/event_loop.py" />
+        <option value="$PROJECT_DIR$/client/gameClient.py" />
         <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/server/config.py" />
+        <option value="$PROJECT_DIR$/client/client.py" />
         <option value="$PROJECT_DIR$/server/server.py" />
       </list>
     </option>
@@ -304,21 +285,26 @@
     <property name="recentsLimit" value="5" />
     <property name="FullScreen" value="false" />
   </component>
-  <component name="RunManager" selected="Python.server">
-    <configuration default="false" name="gameClient" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/client" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.client">
+    <configuration default="false" name="test_timer_file" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/client" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pythonChat" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/client/gameClient.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_timer_file.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -359,38 +345,38 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="server" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration default="false" name="client" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/client" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pythonChat" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server/server.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/client/client.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="test_timer_file" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration default="false" name="event_loop" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/client" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pythonChat" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test_timer_file.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/client/event_loop.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -583,20 +569,39 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.gameClient" />
-      <item index="1" class="java.lang.String" itemvalue="Python.test" />
-      <item index="2" class="java.lang.String" itemvalue="Python.userInfomation" />
-      <item index="3" class="java.lang.String" itemvalue="Python.server" />
-      <item index="4" class="java.lang.String" itemvalue="Python.test_timer_file" />
+    <configuration default="false" name="server" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pythonChat" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server/server.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <list size="6">
+      <item index="0" class="java.lang.String" itemvalue="Python.server" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test_timer_file" />
+      <item index="2" class="java.lang.String" itemvalue="Python.test" />
+      <item index="3" class="java.lang.String" itemvalue="Python.userInfomation" />
+      <item index="4" class="java.lang.String" itemvalue="Python.client" />
+      <item index="5" class="java.lang.String" itemvalue="Python.event_loop" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.server" />
+        <item index="0" class="java.lang.String" itemvalue="Python.client" />
         <item index="1" class="java.lang.String" itemvalue="Python.test" />
-        <item index="2" class="java.lang.String" itemvalue="Python.test_timer_file" />
-        <item index="3" class="java.lang.String" itemvalue="Python.userInfomation" />
-        <item index="4" class="java.lang.String" itemvalue="Python.gameClient" />
+        <item index="2" class="java.lang.String" itemvalue="Python.event_loop" />
+        <item index="3" class="java.lang.String" itemvalue="Python.test_timer_file" />
+        <item index="4" class="java.lang.String" itemvalue="Python.userInfomation" />
       </list>
     </recent_temporary>
   </component>
@@ -622,14 +627,14 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30565584" sideWeight="0.4376013" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25391096" sideWeight="0.38951918" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24959481" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32972324" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30565584" sideWeight="0.56239873" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25391096" sideWeight="0.61048084" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -658,63 +663,19 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="47" />
+      <option name="time" value="72" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="sock.fileno()" language="Python" />
         <watch expression="connection.fileno()" language="Python" />
         <watch expression="config.GAME_TIME" language="Python" />
+        <watch expression="rooms" language="Python" />
+        <watch expression="username_to_room" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/server/createDB.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/userInfomation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="23" selection-start-line="37" selection-start-column="23" selection-end-line="37" selection-end-column="23" />
-          <folding>
-            <element signature="e#22#36#0" expanded="true" />
-            <marker date="1452092598704" expanded="true" signature="285:314" placeholder="DROP TABLE I..." />
-            <marker date="1452092598704" expanded="true" signature="332:728" placeholder="CREATE TABLE..IF..." />
-            <marker date="1452092598704" expanded="true" signature="828:901" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:907" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:924" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:925" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:926" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:931" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:958" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:963" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1158" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1159" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1163" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1164" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1175" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1432" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1434" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1437" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1704" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1709" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2086" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2087" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2106" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2111" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2133" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2272:2325" placeholder="SELECT onLin..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2510:2562" placeholder="SELECT usern..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="3288:3310" placeholder="SELECT * FRO..userInfo..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/config.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -735,7 +696,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="39" column="23" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
-          <folding />
+          <folding>
+            <element signature="e#23#38#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -753,9 +716,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#22#35#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -781,10 +742,10 @@
           <caret line="32" column="20" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="20" />
           <folding>
             <element signature="e#22#33#0" expanded="true" />
-            <marker date="1452181075275" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
-            <marker date="1452181075275" expanded="true" signature="495:550" placeholder="insert into ..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
+            <marker date="1452365161661" expanded="true" signature="495:550" placeholder="insert into ..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
           </folding>
         </state>
       </provider>
@@ -795,34 +756,34 @@
           <caret line="76" column="17" selection-start-line="76" selection-start-column="17" selection-end-line="76" selection-end-column="17" />
           <folding>
             <element signature="e#22#36#0" expanded="true" />
-            <marker date="1452092598704" expanded="true" signature="285:314" placeholder="DROP TABLE I..." />
-            <marker date="1452092598704" expanded="true" signature="332:728" placeholder="CREATE TABLE..IF..." />
-            <marker date="1452092598704" expanded="true" signature="828:901" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:907" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:924" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:925" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:926" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:931" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:958" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:963" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1158" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1159" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1163" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1164" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1175" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1432" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1434" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1437" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1704" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1709" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2086" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2087" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2106" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2111" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2133" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2272:2325" placeholder="SELECT onLin..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2510:2562" placeholder="SELECT usern..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="3288:3310" placeholder="SELECT * FRO..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="DROP TABLE I..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="CREATE TABLE..IF..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT onLin..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT usern..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..userInfo..." />
           </folding>
         </state>
       </provider>
@@ -858,7 +819,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="39" column="23" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
-          <folding />
+          <folding>
+            <element signature="e#23#38#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -876,9 +839,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#22#35#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -904,10 +865,10 @@
           <caret line="32" column="20" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="20" />
           <folding>
             <element signature="e#22#33#0" expanded="true" />
-            <marker date="1452181075275" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
-            <marker date="1452181075275" expanded="true" signature="495:550" placeholder="insert into ..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
+            <marker date="1452365161661" expanded="true" signature="495:550" placeholder="insert into ..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
           </folding>
         </state>
       </provider>
@@ -918,34 +879,34 @@
           <caret line="76" column="17" selection-start-line="76" selection-start-column="17" selection-end-line="76" selection-end-column="17" />
           <folding>
             <element signature="e#22#36#0" expanded="true" />
-            <marker date="1452092598704" expanded="true" signature="285:314" placeholder="DROP TABLE I..." />
-            <marker date="1452092598704" expanded="true" signature="332:728" placeholder="CREATE TABLE..IF..." />
-            <marker date="1452092598704" expanded="true" signature="828:901" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:907" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:924" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:925" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:926" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:931" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:958" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:963" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1158" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1159" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1163" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1164" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1175" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1432" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1434" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1437" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1704" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1709" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2086" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2087" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2106" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2111" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2133" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2272:2325" placeholder="SELECT onLin..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2510:2562" placeholder="SELECT usern..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="3288:3310" placeholder="SELECT * FRO..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="DROP TABLE I..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="CREATE TABLE..IF..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT onLin..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT usern..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..userInfo..." />
           </folding>
         </state>
       </provider>
@@ -981,7 +942,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="39" column="23" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
-          <folding />
+          <folding>
+            <element signature="e#23#38#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1024,10 +987,10 @@
           <caret line="43" column="66" selection-start-line="43" selection-start-column="66" selection-end-line="43" selection-end-column="66" />
           <folding>
             <element signature="e#22#33#0" expanded="true" />
-            <marker date="1452181075275" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
-            <marker date="1452181075275" expanded="true" signature="495:550" placeholder="insert into ..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
+            <marker date="1452365161661" expanded="true" signature="495:550" placeholder="insert into ..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
           </folding>
         </state>
       </provider>
@@ -1038,34 +1001,34 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#22#36#0" expanded="true" />
-            <marker date="1452092598704" expanded="true" signature="285:314" placeholder="DROP TABLE I..." />
-            <marker date="1452092598704" expanded="true" signature="332:728" placeholder="CREATE TABLE..IF..." />
-            <marker date="1452092598704" expanded="true" signature="828:901" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:907" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:924" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:925" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:926" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:931" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:958" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:963" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1158" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1159" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1163" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1164" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1175" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1432" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1434" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1437" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1704" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1709" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2086" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2087" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2106" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2111" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2133" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2272:2325" placeholder="SELECT onLin..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2510:2562" placeholder="SELECT usern..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="3288:3310" placeholder="SELECT * FRO..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="DROP TABLE I..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="CREATE TABLE..IF..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT onLin..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT usern..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..userInfo..." />
           </folding>
         </state>
       </provider>
@@ -1094,28 +1057,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/client.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.5">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/room.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/socket.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="233" column="0" selection-start-line="233" selection-start-column="0" selection-end-line="233" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1143,48 +1088,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/accountInfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/userInfomation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="37" column="32" selection-start-line="37" selection-start-column="32" selection-end-line="37" selection-end-column="32" />
           <folding>
             <element signature="e#22#36#0" expanded="true" />
-            <marker date="1452092598704" expanded="true" signature="285:314" placeholder="DROP TABLE I..." />
-            <marker date="1452092598704" expanded="true" signature="332:728" placeholder="CREATE TABLE..IF..." />
-            <marker date="1452092598704" expanded="true" signature="828:901" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:907" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:924" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:925" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:926" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:931" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:958" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="828:963" placeholder="INSERT INTO ..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1158" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1159" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1163" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1164" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1112:1175" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1432" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1434" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1372:1437" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1704" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="1644:1709" placeholder="SELECT signI..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2086" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2087" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2106" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2111" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2054:2133" placeholder="UPDATE userI..." />
-            <marker date="1452092598704" expanded="true" signature="2272:2325" placeholder="SELECT onLin..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="2510:2562" placeholder="SELECT usern..userInfo..." />
-            <marker date="1452092598704" expanded="true" signature="3288:3310" placeholder="SELECT * FRO..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="DROP TABLE I..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="CREATE TABLE..IF..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="INSERT INTO ..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT signI..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="UPDATE userI..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT onLin..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT usern..userInfo..." />
+            <marker date="1452092598704" expanded="true" signature="-1:-1" placeholder="SELECT * FRO..userInfo..." />
           </folding>
         </state>
       </provider>
@@ -1213,28 +1150,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/gameServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-          <folding>
-            <element signature="e#23#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/gameClient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="21" selection-start-line="39" selection-start-column="21" selection-end-line="39" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/server.log">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1242,34 +1161,99 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/config.py">
+    <entry file="file://$PROJECT_DIR$/server/accountInfo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+          <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
           <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/client.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="38" selection-start-line="63" selection-start-column="38" selection-end-line="63" selection-end-column="38" />
+          <caret line="77" column="11" selection-start-line="77" selection-start-column="11" selection-end-line="77" selection-end-column="11" />
           <folding>
             <element signature="e#22#33#0" expanded="true" />
-            <marker date="1452181075275" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
-            <marker date="1452181075275" expanded="true" signature="495:550" placeholder="insert into ..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
-            <marker date="1452181075275" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="411:474" placeholder="CREATE TABLE..user..." />
+            <marker date="1452365161661" expanded="true" signature="495:550" placeholder="insert into ..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1272" placeholder="SELECT passw..userInfo..." />
+            <marker date="1452365161661" expanded="true" signature="1225:1295" placeholder="SELECT passw..userInfo..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python2.7/socket.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="216" column="53" selection-start-line="216" selection-start-column="53" selection-end-line="216" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/gameClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+          <folding>
+            <element signature="e#23#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="43" column="24" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+          <folding>
+            <element signature="e#23#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/event_loop.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
+          <folding>
+            <element signature="e#22#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.68430656">
-          <caret line="265" column="25" selection-start-line="265" selection-start-column="25" selection-end-line="265" selection-end-column="25" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/gameServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37406483">
+          <caret line="62" column="11" selection-start-line="62" selection-start-column="11" selection-end-line="62" selection-end-column="11" />
           <folding>
-            <element signature="e#22#35#0" expanded="true" />
+            <element signature="e#23#38#0" expanded="true" />
           </folding>
         </state>
       </provider>

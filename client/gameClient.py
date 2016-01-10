@@ -67,4 +67,3 @@ logger = logConfig(False)
 cli = SenderClient(config.serverip, config.serverport)
 cmdline = CommandLineClient(cli, sys.stdin)
 asyncore.loop()
-

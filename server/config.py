@@ -1,6 +1,6 @@
 __author__ = 'xiejun'
 
-
+import time
 # the server address
 SERVER_IP = 'localhost'
 
@@ -21,3 +21,10 @@ SELECT_TIME_OUT = 1
 
 # the period of the 21 game, second
 GAME21_PERIOD = 120
+
+# the duaration time of the 21 game
+GAME21_DUARATION = 30
+
+# the first expires of the 21 game, if it set to None, the game will start after in one minute
+
+GAME21_EXPIRES = time.time() + 2000

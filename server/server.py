@@ -10,23 +10,68 @@ import re
 from operator import itemgetter
 import thread
 
+# stroe the connections, name: connector
 connectors = {}
 
-def logConfig(onTerminal):
+#available timer task, store the timers
+available_timers = []
+
+# relationship of username and room
+username_to_room = {}
+
+# rooms
+rooms = {}
+
+
+
+def main():
+    logger.info('server start!')
+    loop = EventLoop()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.setblocking(0)
+    sock.bind((config.SERVER_IP, config.SERVER_PORT))
+    sock.listen(config.MAX_LISTEN_NUM)
+    accepter = Accpter(sock, loop)
+    loop.add_event(accepter)
+    first_expires = config.GAME21_EXPIRES
+    if first_expires is None:
+        t = time.localtime()
+        t2 = time.struct_time((t.tm_year,
+                              t.tm_mon,
+                              t.tm_mday,
+                              t.tm_hour+1,
+                              0,
+                              0,
+                              t.tm_wday,
+                              t.tm_yday,
+                              t.tm_isdst
+        ))
+        first_expires = time.mktime(t2)
+    game_timer = Game21Timer(first_expires, config.GAME21_PERIOD, config.GAME21_DUARATION)
+    available_timers.append(game_timer)
+    try:
+        # start the event loop
+        loop.loop()
+    finally:
+        sock.close()
+
+def log_config(on_terminal):
     #config the logger
     FORMAT = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
     logging.basicConfig(level=logging.DEBUG,format=FORMAT, filename="server.log", filemode='w')
     logger = logging.getLogger("server_log")
-
-    if onTerminal is True:
+    if on_terminal is True:
+        # control need to print log on terminal
         console = logging.StreamHandler()
         console.setLevel(logging.INFO)
         formatter = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
-        console.setFormatter(formatter)
+        console.setFormatter(formatter),
         logger.addHandler(console)
     return logger
 
-logger = logConfig(True)
+# the logger
+logger = log_config(True)
 
 class Connector(object):
 
@@ -40,8 +85,9 @@ class Connector(object):
         self.name = None
 
     def handle_read_event(self):
-        data =  self.sock.recv(1024)
+        data = self.sock.recv(1024)
         if not data:
+            self.sign_out()
             self.close()
         sep_loc = data.find(config.SEPRATOR)
         if sep_loc >= 0 :
@@ -71,13 +117,28 @@ class Connector(object):
         self.sock.close()
 
     def process_message(self, message):
-        if self.begin_with(message, '/SIGNUP'):
+        if self.begin_with(message, '/SIGNUP '):
             self.sign_up(message)
-        elif self.begin_with(message, '/SIGNIN'):
+        elif self.begin_with(message, '/SIGNIN '):
             self.sign_in(message)
-        elif self.begin_with(message, '/SIGNOUT'):
+        elif self.begin_with(message, '/SIGNOUT '):
             self.sign_out()
-        elif self.begin_with(message, '/21GAME'):
+        elif self.begin_with(message, '/W '):
+            # chat to someone
+            self.chat_to_someone(message)
+        elif self.begin_with(message, '/CREATEROOM '):
+            # create a new room
+            self.create_new_room(message)
+        elif self.begin_with(message, '/QUITROOM'):
+            # quit the room
+            self.quit_room(message)
+        elif self.begin_with(message, '/JOINROOM '):
+            # join a room
+            self.join_room(message)
+        elif self.begin_with(message, '/CHATROOM'):
+            # chat to room
+            self.chat_to_room(message)
+        elif self.begin_with(message, '/21GAME '):
             available_timers[0].process_answer_callback(message, self.name)
         else:
             for _, connector in connectors.items():
@@ -91,10 +152,8 @@ class Connector(object):
         return False
 
     def send_message(self, message):
-        self.obuffer += time.strftime("%d %b %Y %H:%M:%S", time.localtime())
-        self.obuffer += '\n'
-        self.obuffer += message
-        self.obuffer += '\n'
+        _message = time.strftime("\n%d %b %Y %H:%M:%S", time.localtime()) + '\n' + message + '\n\n'
+        self.obuffer += _message
 
     def sign_out(self):
         if(not self.has_sign_in()):
@@ -106,6 +165,8 @@ class Connector(object):
         self.send_message('system: ' + self.name + ' bye bye!')
         user_info_db.sign_out_user(self.name)
         self.name = None
+
+
 
     def sign_in(self, message):
         if(self.has_sign_in()):
@@ -145,6 +206,84 @@ class Connector(object):
         else:
             self.send_message('system: register failed, try again.')
 
+    def chat_to_someone(self, message):
+        if not self.has_sign_in():
+            self.send_message('system: please sign in first')
+            return
+        li = message.split(' ', 2)
+        if(len(li) != 3):
+            self.send_message('system: the format of send message to player is: /M username message')
+            return
+        othername = li[1]
+        contents = li[2]
+        other_conn = connectors.get(othername)
+        if other_conn is None:
+            self.send_message('system: the playser you send message to was offline')
+            return
+        other_conn.send_message(self.name + ': ' + contents)
+
+    def create_new_room(self, message):
+        if not self.has_sign_in():
+            self.send_message('system: please sign in first')
+            return
+        li = message.split(' ', 1)
+        if (len(li) != 2):
+            self.send_message('system: the format of create new room is: /CREATEROOM roomname')
+            return
+        room_name = li[1]
+        if rooms.get(room_name) is not None:
+            self.send_message('system: the room has exist, you join the room by: /JOINROOM roomname')
+            return
+        rooms[room_name] = Room(room_name)
+        rooms[room_name].add_user(self.name)
+        self.send_message('you have create a new room and join the room')
+
+    def quit_room(self, message):
+        if not self.has_sign_in():
+            self.send_message('system: please sign in first')
+            return
+        if(message != '/QUITROOM '):
+            self.send_message('system: command error')
+            return
+        room = username_to_room.get(self.name)
+        if room is None:
+            self.send_message('system: you are not in any room')
+            return
+        room.remove_user(self.name)
+        room.send_message_to_all('system: '+ self.name +' quit the room')
+
+    def join_room(self, message):
+        if not self.has_sign_in():
+            self.send_message('system: please sign in first')
+            return
+        li = message.split(' ', 1)
+        if(len(li) != 2):
+            self.send_message('system: command error')
+            return
+        room_name = li[1]
+        room = rooms.get(room_name)
+        if room is None:
+            self.send_message('system: room is not exists, you can creat the room by command: /CRATEROOM roomname')
+            return
+        room.send_message_to_all('system: '+ self.name +' join the room')
+        room.add_user(self.name)
+
+    def chat_to_room(self, message):
+        if not self.has_sign_in():
+            self.send_message('system: please sign in first')
+            return
+        li = message.split(' ', 1)
+        if (len(li) != 2):
+            self.send_message('system: command error')
+            return
+        content = li[1]
+        room = username_to_room.get(self.name)
+        if room is None:
+            self.send_message('system: you are not in any room, please join a room first')
+            return
+        room.send_message_to_all(content)
+
+
     def has_sign_in(self, name = None):
         #has some account sign in through this connection
         if name is not None:
@@ -178,6 +317,7 @@ class Accpter(object):
 
     def writable(self):
         return False
+
 
 class EventLoop(object):
     """
@@ -222,10 +362,9 @@ class EventLoop(object):
             current = time.time()
             update_timer(current)
 
-#available timer task
-available_timers = []
 
 def update_timer(current):
+    # process all timers
     for timer in available_timers:
         while current > timer.expires:
             timer.callback(current)
@@ -234,95 +373,68 @@ def update_timer(current):
 
 
 class TaskTimer(object):
-
+    # base class of timer
     def __init__(self, _expires, _period):
+        """
+        :param _expires: expires tiem
+        :param _period: timer period
+        :return:
+        """
         self.expires = _expires
         self.period = _period
 
     def callback(self, current):
+        """
+        timer call back, often need to be override
+        :param current:
+        :return:
+        """
         print('timer happens in' + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(current) ))
 
 
 class Game21Timer(TaskTimer):
+    """
+    the 21 game timer task
+    """
 
     def __init__(self, _expires, _period, _duaration):
-        TaskTimer.__init__(self, _expires, _duaration)
+        TaskTimer.__init__(self, _expires, _period)
         self.numbers = []
         self.game_in = False
-        self.game_start_time = _expires
-        self.game_end_time = _expires + _duaration
-        self.game_period = _period
         self.game_duaration = _duaration
         self.patter = '\D+'
         self.answers = []
+        self.answered_username = set()
 
 
 
     def callback(self, current):
-        if current > self.game_start_time:
-            # game not start, start a game
-            logger.info( 'game start')
-            self.game_start_time += self.game_period
-            self.game_start()
-        elif current > self.game_end_time:
-            # time up
-            logger.info( "game time up")
-            # update the next time up
-            self.game_end_time = self.game_start_time + self.game_duaration
-            if not self.game_in:
-                # game has end by right answer, do nothing
-                pass
-            else:
-                # time up and no right answer, find the earliest and largest answer
-                self.game_in = False
-                if len(self.answers) == 0:
-                    for _, connector in connectors.items():
-                        connector.send_message('system: no person answer the question, game over')
-                    return
-                rank = sorted(self.answers, key=itemgetter(0), reverse= True)
-                self.winner = rank[0][1]
-                for _, connector in connectors.items():
-                    connector.send_message('system: ' + self.winner + ' win the game, his answer is ' + rank[0][2])
-
-
-        else:
-            # recently game is in
-            pass
+        logger.info( 'game start')
+        self.game_start()
+        # start a new thread to handle the duaration time of the 21 game
+        thread.start_new_thread(game_end_control, (self.game_duaration, self))
 
     def game_start(self):
         self.winner = None
         self.answers = []
         self.game_in = True
         random.seed()
-        self.numbers = [random.randint(1,10) for i in range(4)]
+        self.numbers = [random.randint(1,9) for i in range(4)]
         self.numbers.sort()
-        message = '''
-system: The 21 game will start, you should use the following four numbers, +, -, *, /, and parenthesis to make the
-result of the expression is 21, if it can't be equal to 21, the largest number will win
-the four numbers are: %d   %d   %d   %d
-you can use /21GAME <expression> to answer this question
-''' %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3])
+        message = "system: The 21 game will start, you should use the following four numbers, +, -, *, /, " \
+                  "and parenthesis to make the result of the expression is 21," \
+                  " if it can't be equal to 21, the largest number less than 21 will win game. \n " \
+                  "the four numbers are: %d   %d   %d   %d \n " \
+                  "you can use /21GAME <expression> to answer this question" \
+                  %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3])
         for _, connector in connectors.iteritems():
             connector.send_message(message)
 
 
     def process_answer_callback(self, message, username):
-        li = message.split(' ', 1)
-        conn = connectors.get(username)
-        if conn is None:
-            logger("can't find username in connectors")
+        expression, conn = self.check_message(message, username)
+        if expression is None:
             return
-        if len(li) != 2:
-            conn.send_message('system: you should input your answer by format of "/21GAME <expression>"')
-            return
-        if not self.game_in:
-            conn.send_message('system: there is no game in, the next game will start at ' + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(self.expires)))
-            return
-        expression = li[1]
-        numbers =[int(i) for i in re.split(self.patter, expression)]
-        numbers.sort()
-        if(self.numbers != numbers):
-            conn.send_message('system: wrong input, the four number are: %d   %d   %d   %d' %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3]))
         try:
             ans = eval(expression)
             if ans ==21:
@@ -331,94 +443,88 @@ you can use /21GAME <expression> to answer this question
                 self.winner = username
                 for _, connector in connectors.items():
                     connector.send_message('system: ' + self.winner + ' win the game, game over. his answer is: ' + expression)
+            elif ans > 21:
+                # if the answer over 21, it will be treat as bad ansert
+                self.answered_username.add(username)
             else:
                 # not right answer, store it
                 self.answers.append((ans, username, expression))
+                self.answered_username.add(username)
         except Exception, e:
             conn.send_message('system: wrong input, the error is %s' %repr(e))
+
+    def game_time_out(self):
+        # time out and no anaser are equal to 21
+        logger.info( "game time up")
+        if not self.game_in:
+            return
+        self.game_in = False
+        if len(self.answers) == 0:
+            for _, connector in connectors.items():
+                connector.send_message('system: no person answer the question, game over')
+            return
+        rank = sorted(self.answers, key=itemgetter(0), reverse= True)
+        self.winner = rank[0][1]
+        for _, connector in connectors.items():
+            connector.send_message('system: ' + self.winner + ' win the game, his answer is ' + rank[0][2])
+
+    def check_message(self, message, username):
+        li = message.split(' ', 1)
+        conn = connectors.get(username)
+        if conn is None:
+            logger.error("can't find username in connectors")
+            return None, conn
+        if len(li) != 2:
+            conn.send_message('system: you should input your answer by format of "/21GAME <expression>"')
+            return None, conn
+        if not self.game_in:
+            conn.send_message('system: there is no game in, the next game will start at '
+                              + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(self.expires)))
+            return None, conn
+        expression = li[1]
+        numbers =[int(i) for i in re.split(self.patter, expression)]
+        numbers.sort()
+        if(self.numbers != numbers):
+            conn.send_message('system: wrong input, the four number are: %d   %d   %d   %d' %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3]))
+        for ch in expression:
+            # check if contains operator other than + - * /
+            if not (ch.isdigit() or (ch in '+-*/') ):
+                conn.send_message('system: wrong input, the right fromat samples: /21GAME 1+2/3*4')
+                return None, conn
+        return expression, conn
 
 
 def game_end_control(tseconds, obj):
     # to cotrol the game duaration
     time.sleep(tseconds)
-    obj.game_in = False
+    obj.game_time_out()
 
 
-def main():
-    logger.info('server start!')
-    loop = EventLoop()
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind((config.SERVER_IP, config.SERVER_PORT))
-    sock.listen(10)
-    sock.setblocking(0)
-    accepter = Accpter(sock, loop)
-    loop.add_event(accepter)
-    game_timer = Game21Timer(time.time(), 120, 40)
-    available_timers.append(game_timer)
-    try:
-        loop.loop()
-    finally:
-        sock.close()
+class Room(object):
 
+    def __init__(self, roomname):
+        self.users = set()
+        self.roomname = roomname
+        self.user_nums = 0
 
+    def add_user(self, username):
+        self.users.add(username)
+        username_to_room[username] = self
+        self.user_nums += 1
 
+    def remove_user(self, username):
+        self.users.remove(username)
+        del username_to_room[username]
+        self.user_nums -= 1
+        if self.user_nums == 0:
+            # no user in thr romm, delete it
+            del rooms[self.room_name]
 
-
-
-# def main():
-#     logger = logConfig(True)
-#     socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     socket_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-#     socket_server.bind((config.serverip, config.serverport))
-#     socket_server.listen(1)
-#     socket_server.setblocking(0)
-#
-#     epollfd = select.epoll()
-#     epollfd.register(socket_server.fileno(), select.EPOLLIN)
-#
-#     message_queues = {}
-#     connections = {}
-#     connections[socket_server.fileno()] = socket_server
-#     try:
-#         while True:
-#             events = epollfd.poll()
-#             for fd, event in events:
-#                 socket_event = connections[fd]
-#                 if event == select.POLLIN:
-#                     if socket_event == socket_server:
-#                         # new connection
-#                         connection, addr = socket_server.accept()
-#                         logger.info('new connection from %s', repr(addr))
-#                         connection.setblocking(0)
-#                         connections[connection.fileno()] = connection
-#                         message_queues[connection.fileno()] = []
-#                         epollfd.register(connection.fileno(), select.POLLIN)
-#                     else:
-#                         data = socket_event.recv(config.MAX_RECV_LEN)
-#                         logger.info('recieve data: %s', repr(data))
-#                         if data:
-#                             message_queues[socket_event.fileno()].append(data)
-#                             epollfd.modify(fd, select.EPOLLOUT)
-#                         else:
-#                             epollfd.modify(fd, select.EPOLLOUT)
-#                 elif event == select.POLLOUT:
-#                     # writtable
-#                     logger.info('event write')
-#                     msg = ''.join(message_queues[socket_event.fileno()])
-#                     if len(msg) == 0:
-#                         socket_event.close()
-#                     socket_event.send(msg)
-#                     epollfd.modify(fd, select.EPOLLIN)
-#                 elif event == select.EPOLLHUP:
-#                     epollfd.unregister(fd)
-#                     connections[fd].close()
-#                     del connections[fd]
-#     finally:
-#         epollfd.unregister(socket_server.fileno())
-#         epollfd.close()
-#         socket_server.close()
-
+    def send_message_to_all(self, message):
+        for username in self.users:
+            conn = connectors.get(username)
+            if conn is not None:
+                conn.send_message(message)
 
 if __name__ == '__main__':
     main()

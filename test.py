@@ -56,10 +56,23 @@ import re
 # numbers = [int(i) for i in re.split(patter, s)]
 # print numbers
 #
-# try:
+# try:conn.send_message('system: wrong input, the four number are: %d   %d   %d   %d' %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3]))
 #     ans = eval(s)
 # except Exception, e:
 #     print repr(e)
-from operator import itemgetter
-l = [(10, 1 ),(9, 2), (11, 3), (10,4)]
-print sorted(l, key= itemgetter(0), reverse= True)
+# from operator import itemgetter
+# l = [(10, 1 ),(9, 2), (11, 3), (10,4)]
+# print sorted(l, key= itemgetter(0), reverse= True)
+#
+# t = time.localtime()
+# t2 =time.time()
+# print t
+# print t2
+# print time.mktime(t)
+import  socket
+import  fcntl
+
+import sys
+
+x = '12345'
+print x[:-1]
