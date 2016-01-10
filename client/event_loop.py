@@ -1,7 +1,7 @@
 __author__ = 'xiejun'
 import select
 import time
-
+import errno
 
 class EventLoop(object):
     """
@@ -34,7 +34,13 @@ class EventLoop(object):
                     w.append(fileno)
                 if(obj.exptable()):
                     e.append(fileno)
-            r, w, e = select.select(r, w, e, timeout)
+            try:
+                r, w, e = select.select(r, w, e, timeout)
+            except select.error, err:
+                if err[0] != errno.EINTR:
+                    raise
+                else:
+                    continue
             for fileno in r:
                 obj = self.map.get(fileno)
                 if obj is None:

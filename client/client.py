@@ -9,6 +9,7 @@ class Connector(event_loop.Event):
 
     def __init__(self, host, port, loop):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 0)
         self.fileno = self.sock.fileno()
         self.sock.connect((host,port))
         self.sock.setblocking(0)
@@ -38,7 +39,6 @@ class Connector(event_loop.Event):
 
     def handle_expt_event(self):
         data = self.sock.recv(1, socket.MSG_OOB)
-        print 'recieve oob'
         self.heart_beat_cnt = 0
 
     def close(self):
@@ -70,11 +70,11 @@ class HeartBeat(event_loop.TaskTimer):
         self.heart_beat_max = heart_beat_max
 
     def callback(self, current):
-        self.conn.sock.send('c', socket.MSG_OOB)
         self.conn.heart_beat_cnt += 1
         if(self.conn.heart_beat_cnt > self.heart_beat_max):
-            print 'heart bad'
             self.conn.close()
+            exit(0)
+        self.conn.sock.send('c', socket.MSG_OOB)
 
 
 
@@ -86,6 +86,17 @@ def main():
     loop.add_event(cmdline)
     loop.add_timer(HeartBeat(connector, time.time()+3, 3, 10))
     loop.loop()
+    # for i in range(1):
+    #     connector.sock.send('c', socket.MSG_OOB)
+    #     time.sleep(1)
+    #     print connector.sock.recv(1024, socket.MSG_OOB)
+    #     time.sleep(1)
+    #     connector.sock.close()
+    #     time.sleep(1)
+    #     #print connector.sock.recv(1024)
+    #     #connector.sock.send('cxbd')
+    #     #print connector.sock.recv(1024)
+
 
 if __name__ == '__main__':
     main()

@@ -9,6 +9,8 @@ import random
 import re
 from operator import itemgetter
 import thread
+import errno
+
 
 # stroe the connections, name: connector
 connectors = {}
@@ -29,6 +31,7 @@ def main():
     loop = EventLoop()
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 0)
     sock.setblocking(0)
     sock.bind((config.SERVER_IP, config.SERVER_PORT))
     sock.listen(config.MAX_LISTEN_NUM)
@@ -88,10 +91,20 @@ class Connector(object):
         self.heart_beat_cnt = 0
 
     def handle_read_event(self):
-        data = self.sock.recv(1024)
+        try:
+            data = self.sock.recv(1024)
+        except socket.error, err:
+            if err[0] != errno.ECONNRESET:
+                raise
+            else:
+                logger.warning('recieve a RST')
+                self.sign_out()
+                self.close()
+            return
         if not data:
             self.sign_out()
             self.close()
+            return
         sep_loc = data.find(config.SEPRATOR)
         if sep_loc >= 0 :
             message = ''.join(self.ibuffer)
@@ -106,9 +119,8 @@ class Connector(object):
         self.obuffer = self.obuffer[sent:]
 
     def handle_expt_event(self):
-        data = self.sock.recv(1,socket.MSG_OOB)
-        logger.info('recieve oob data %s', data)
-        self.sock.send(data, socket.MSG_OOB)
+        data = self.sock.recv(1, socket.MSG_OOB)
+        self.sock.send('c', socket.MSG_OOB)
         self.heart_beat_cnt = 0
 
     def readable(self):
@@ -121,7 +133,7 @@ class Connector(object):
         return True
 
     def close(self):
-        logger.info("close connector %s", repr(self.sock.getpeername()))
+        logger.info("close connector")
         del self.loop.map[self.fileno]
         self.sock.close()
 
@@ -361,7 +373,13 @@ class EventLoop(object):
                     w.append(fileno)
                 if(obj.exptable()):
                     e.append(fileno)
-            r, w, e = select.select(r, w, e, config.SELECT_TIME_OUT)
+            try:
+                r, w, e = select.select(r, w, e, config.SELECT_TIME_OUT)
+            except select.error, err:
+                if err[0]!= errno.EINTR:
+                    raise
+                else:
+                    continue
             for fileno in r:
                 obj = self.map.get(fileno)
                 if obj is None:
