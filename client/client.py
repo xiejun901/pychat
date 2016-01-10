@@ -14,7 +14,7 @@ class Connector(event_loop.Event):
         self.sock.setblocking(0)
         self.buffer = ''
         self.loop = loop
-        self.heat_beat_cnt = 0
+        self.heart_beat_cnt = 0
 
     def readable(self):
         return True
@@ -63,15 +63,15 @@ class CommandLineClient(event_loop.Event):
 
 class HeartBeat(event_loop.TaskTimer):
 
-    def __init__(self, conn, expires, period, heart_beat_timeout):
+    def __init__(self, conn, expires, period, heart_beat_max):
         event_loop.TaskTimer.__init__(self, expires, period)
         self.conn = conn
-        self.heart_beat_max = heart_beat_timeout
+        self.heart_beat_max = heart_beat_max
 
     def callback(self, current):
         self.conn.sock.send('c', socket.MSG_OOB)
-        self.conn.cnt += 1
-        if(self.conn.cnt > self.heart_beat_max):
+        self.conn.heart_beat_cnt += 1
+        if(self.conn.heart_beat_cnt > self.heart_beat_max):
             self.conn.close()
 
 
@@ -82,7 +82,7 @@ def main():
     cmdline = CommandLineClient(connector, sys.stdin, loop)
     loop.add_event(connector)
     loop.add_event(cmdline)
-    loop.add_timer(HeartBeat(connector, time.time()+3, 3))
+    loop.add_timer(HeartBeat(connector, time.time()+3, 3, 10))
     loop.loop()
 
 if __name__ == '__main__':
