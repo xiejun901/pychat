@@ -39,7 +39,7 @@ class Connector(event_loop.Event):
     def handle_read_event(self):
         data = self.sock.recv(8192)
         if data:
-            print data
+            print '\033[1;31;m' + data
         else:
             self.close()
 
@@ -86,7 +86,6 @@ class HeartBeat(event_loop.TaskTimer):
 
 def main():
     argvs  = sys.argv
-    print argvs
     if(len(argvs) == 1):
         server_ip = config.serverip
         server_port = config.serverport

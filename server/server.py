@@ -11,7 +11,7 @@ from operator import itemgetter
 import errno
 
 import config
-from userInfomation import user_info_db
+from user_infomation import user_info_db
 import event_loop
 
 
@@ -138,8 +138,7 @@ class Connector(event_loop.Event):
         elif self.begin_with(message, '/'):
             self.send_message(self.help_message)
         else:
-            for _, connector in connectors.items():
-                connector.send_message(self.name + ': ' + message)
+            self.send_to_all(message)
 
     def begin_with(self, s, t):
         if len(t) > len(s):
@@ -239,7 +238,7 @@ class Connector(event_loop.Event):
         if not self.has_sign_in():
             self.send_message('system: please sign in first')
             return
-        if(message != '/QUITROOM '):
+        if(message != '/QUITROOM'):
             self.send_message('system: command error')
             return
         room = username_to_room.get(self.name)
@@ -306,7 +305,12 @@ class Connector(event_loop.Event):
         ot = user_info_db.get_online_time(self.name)
         self.send_message('system: you online time is %d seconds.' %ot)
 
-
+    def send_to_all(self, message):
+        if(not self.has_sign_in()):
+            self.send_message('system: please sign in first')
+            return
+        for _, connector in connectors.items():
+                connector.send_message(self.name + ': ' + message)
 
     def check_heart_beat(self, heart_beat_max):
         self.heart_beat_cnt += 1
@@ -382,7 +386,7 @@ class Game21(object):
         if (self.check_message(expression, conn, username)):
             try:
                 ans = eval(expression)
-                if ans ==21:
+                if ans == 21:
                     # right answer
                     self.game_in = False
                     self.winner = username
@@ -403,13 +407,14 @@ class Game21(object):
             conn.send_message('system: there is no game in, the next game will start at '
                               + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(self.expires)))
             return False
-        numbers =[int(i) for i in re.split(self.patter, expression)]
+        numbers =[int(i) for i in re.split(self.patter, expression) if i != '' ]
         numbers.sort()
         if(self.numbers != numbers):
             conn.send_message('system: wrong input, the four number are: %d   %d   %d   %d' %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3]))
+            return False
         for ch in expression:
             # check if contains operator other than + - * /
-            if not (ch.isdigit() or (ch in '+-*/') ):
+            if not (ch.isdigit() or (ch in '+-*/()') ):
                 conn.send_message('system: wrong input, the right fromat samples: /21GAME 1+2/3*4')
                 return False
         return True
