@@ -376,7 +376,7 @@ class Game21(object):
         random.seed()
         self.numbers = [random.randint(1,9) for i in range(4)]
         self.numbers.sort()
-        self.game_in = True
+        self.game_in = False
         self.patter = '\D+'
         self.answers = []
         self.answered_username = set()
@@ -404,8 +404,10 @@ class Game21(object):
 
     def check_message(self, expression, conn, username):
         if not self.game_in:
-            conn.send_message('system: there is no game in, the next game will start at '
-                              + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(self.expires)))
+            conn.send_message('system: there is no game in, please wait for the next game.')
+            return False
+        if username in self.answered_username:
+            conn.send_message('system: one person can only give on answer')
             return False
         numbers =[int(i) for i in re.split(self.patter, expression) if i != '' ]
         numbers.sort()
@@ -427,7 +429,7 @@ class Game21(object):
         self.game_in = False
         if len(self.answers) == 0:
             for _, connector in connectors.items():
-                connector.send_message('system: no person answer the question, game over')
+                connector.send_message('system: no one win the game, game over!')
             return
         rank = sorted(self.answers, key=itemgetter(0), reverse= True)
         self.winner = rank[0][1]

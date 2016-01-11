@@ -1,12 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import time
 
 __author__ = 'xiejun'
 
 # the server address
-SERVER_IP = '0.0.0.0'
+SERVER_IP = 'localhost'
 
 # the listen port
 SERVER_PORT = 8080
@@ -24,11 +23,11 @@ SEPRATOR = '\r\n'
 SELECT_TIME_OUT = 1
 
 # the period of the 21 game, second
-GAME21_PERIOD = 300
+GAME21_PERIOD = 180
 
 # the duaration time of the 21 game
 GAME21_DUARATION = 120
 
 # the first expires of the 21 game, if it set to None, the game will start after in one minute
 
-GAME21_EXPIRES = time.time() + 120
+GAME21_EXPIRES = None
