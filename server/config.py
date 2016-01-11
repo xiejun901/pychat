@@ -27,4 +27,4 @@ GAME21_DUARATION = 30
 
 # the first expires of the 21 game, if it set to None, the game will start after in one minute
 
-GAME21_EXPIRES = time.time() + 2000
+GAME21_EXPIRES = time.time() + 15

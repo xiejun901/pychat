@@ -10,56 +10,10 @@ import re
 from operator import itemgetter
 import thread
 import errno
-
-
-# stroe the connections, name: connector
-connectors = {}
-
-#available timer task, store the timers
-available_timers = []
-
-# relationship of username and room
-username_to_room = {}
-
-# rooms
-rooms = {}
+import event_loop
 
 
 
-def main():
-    logger.info('server start!')
-    loop = EventLoop()
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 0)
-    sock.setblocking(0)
-    sock.bind((config.SERVER_IP, config.SERVER_PORT))
-    sock.listen(config.MAX_LISTEN_NUM)
-    accepter = Accpter(sock, loop)
-    loop.add_event(accepter)
-    first_expires = config.GAME21_EXPIRES
-    if first_expires is None:
-        t = time.localtime()
-        t2 = time.struct_time((t.tm_year,
-                              t.tm_mon,
-                              t.tm_mday,
-                              t.tm_hour+1,
-                              0,
-                              0,
-                              t.tm_wday,
-                              t.tm_yday,
-                              t.tm_isdst
-        ))
-        first_expires = time.mktime(t2)
-    game_timer = Game21Timer(first_expires, config.GAME21_PERIOD, config.GAME21_DUARATION)
-    heart_beat_timer = HeartBeat(time.time(), 3, 10)
-    available_timers.append(game_timer)
-    available_timers.append(heart_beat_timer)
-    try:
-        # start the event loop
-        loop.loop()
-    finally:
-        sock.close()
 
 def log_config(on_terminal):
     #config the logger
@@ -75,10 +29,8 @@ def log_config(on_terminal):
         logger.addHandler(console)
     return logger
 
-# the logger
-logger = log_config(True)
 
-class Connector(object):
+class Connector(event_loop.Event):
 
     def __init__(self, sock, loop):
         self.sock = sock
@@ -89,6 +41,18 @@ class Connector(object):
         # record the username and mask is this connection has sign in
         self.name = None
         self.heart_beat_cnt = 0
+
+        self.help_message = 'system: you input a error command, the usages are follows:\n' \
+                            '\n' \
+                            '/SIGNIN username password               sign in by your username and password\n' \
+                            '/SIGNUP username password               register a new username and password\n' \
+                            '/SIGNOUT                                sign out\n' \
+                            '/W username                             send message to other people by whisper\n' \
+                            '/CREATEROOM roomname                    create a new room and join in\n' \
+                            '/JOINROOM roomname                      join a room\n' \
+                            '/QUITROOM                               quit room\n' \
+                            '/CHATROOM                               send message to room\n' \
+                            '/21GAME expression                      answer the 21 game\n' \
 
     def handle_read_event(self):
         try:
@@ -119,7 +83,12 @@ class Connector(object):
         self.obuffer = self.obuffer[sent:]
 
     def handle_expt_event(self):
-        data = self.sock.recv(1, socket.MSG_OOB)
+        try:
+            data = self.sock.recv(1, socket.MSG_OOB)
+        except socket.error, err:
+            if(err[0] != errno.EWOULDBLOCK):
+                logger.warning('sock.recv(1, socket.MSG_OOB) get bad error')
+                return
         self.sock.send('c', socket.MSG_OOB)
         self.heart_beat_cnt = 0
 
@@ -142,7 +111,7 @@ class Connector(object):
             self.sign_up(message)
         elif self.begin_with(message, '/SIGNIN '):
             self.sign_in(message)
-        elif self.begin_with(message, '/SIGNOUT '):
+        elif self.begin_with(message, '/SIGNOUT'):
             self.sign_out()
         elif self.begin_with(message, '/W '):
             # chat to someone
@@ -156,11 +125,13 @@ class Connector(object):
         elif self.begin_with(message, '/JOINROOM '):
             # join a room
             self.join_room(message)
-        elif self.begin_with(message, '/CHATROOM'):
+        elif self.begin_with(message, '/CHATROOM '):
             # chat to room
             self.chat_to_room(message)
         elif self.begin_with(message, '/21GAME '):
-            available_timers[0].process_answer_callback(message, self.name)
+            self.game21_process_message(message)
+        elif self.begin_with(message, '/'):
+            self.send_message(self.help_message)
         else:
             for _, connector in connectors.items():
                 connector.send_message(self.name + ': ' + message)
@@ -302,7 +273,7 @@ class Connector(object):
         if room is None:
             self.send_message('system: you are not in any room, please join a room first')
             return
-        room.send_message_to_all(content)
+        room.send_message_to_all(self.name + content)
 
 
     def has_sign_in(self, name = None):
@@ -310,6 +281,19 @@ class Connector(object):
         if name is not None:
             return name in connectors
         return self.name is not None
+
+    def game21_process_message(self, message):
+        # process 21 game message
+        if not self.has_sign_in():
+            self.send_message('system: please sign in first')
+            return
+        li = message.split(' ', 1)
+        if len(li) != 2:
+            self.send_message('system: command error')
+            return
+        game21.process_answer(li[1], self, self.name)
+
+
 
     def check_heart_beat(self, heart_beat_max):
         self.heart_beat_cnt += 1
@@ -319,12 +303,17 @@ class Connector(object):
 
 
 
-class Accpter(object):
+class Accpter(event_loop.Event):
 
-    def __init__(self, sock, loop):
-        self.sock = sock
-        self.fileno = sock.fileno()
+    def __init__(self, host, port, loop):
         self.loop = loop
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.fileno = self.sock.fileno()
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 0)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.setblocking(0)
+        self.sock.bind((host, port))
+        self.sock.listen(config.MAX_LISTEN_NUM)
 
     def handle_read_event(self):
         connection, addr = self.sock.accept()
@@ -332,12 +321,6 @@ class Accpter(object):
         connector = Connector(connection, self.loop)
         self.loop.add_event(connector)
         logger.info("new connection %s", repr(addr))
-
-    def handle_write_event(self):
-        pass
-
-    def handle_expt_event(self):
-        pass
 
     def readable(self):
         return True
@@ -348,146 +331,75 @@ class Accpter(object):
     def exptable(self):
         return True
 
-
-class EventLoop(object):
-    """
-    use select.select
-    """
-
-    def __init__(self):
-        self.map = {}
-        self.quit = False
-
-    def add_event(self, chanel):
-        self.map[chanel.fileno] = chanel
-
-    def loop(self):
-        while not self.quit:
-            r = []
-            w = []
-            e = []
-            for fileno, obj in self.map.items():
-                if(obj.readable()):
-                    r.append(fileno)
-                if(obj.writable()):
-                    w.append(fileno)
-                if(obj.exptable()):
-                    e.append(fileno)
-            try:
-                r, w, e = select.select(r, w, e, config.SELECT_TIME_OUT)
-            except select.error, err:
-                if err[0]!= errno.EINTR:
-                    raise
-                else:
-                    continue
-            for fileno in r:
-                obj = self.map.get(fileno)
-                if obj is None:
-                    continue
-                obj.handle_read_event()
-            for fileno in w:
-                obj = self.map.get(fileno)
-                if obj is None:
-                    continue
-                obj.handle_write_event()
-            for fileno in e:
-                obj = self.map.get(fileno)
-                if obj is None:
-                    continue
-                obj.handle_expt_event()
-            current = time.time()
-            update_timer(current)
+    def close(self):
+        self.sock.close()
+        self.loop.remove_event(self)
 
 
-def update_timer(current):
-    # process all timers
-    for timer in available_timers:
-        while current > timer.expires:
-            timer.callback(current)
-            timer.expires += timer.period
-
-
-
-class TaskTimer(object):
-    # base class of timer
-    def __init__(self, _expires, _period):
-        """
-        :param _expires: expires tiem
-        :param _period: timer period
-        :return:
-        """
-        self.expires = _expires
-        self.period = _period
-
-    def callback(self, current):
-        """
-        timer call back, often need to be override
-        :param current:
-        :return:
-        """
-        print('timer happens in' + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(current) ))
-
-
-class Game21Timer(TaskTimer):
+class Game21Timer(event_loop.TaskTimer):
     """
     the 21 game timer task
     """
 
-    def __init__(self, _expires, _period, _duaration):
-        TaskTimer.__init__(self, _expires, _period)
-        self.numbers = []
-        self.game_in = False
+    def __init__(self, _expires, _period, _duaration, timer_timeout):
+        event_loop.TaskTimer.__init__(self, _expires, _period)
         self.game_duaration = _duaration
-        self.patter = '\D+'
-        self.answers = []
-        self.answered_username = set()
-
-
+        self.timer_timeout = timer_timeout
 
     def callback(self, current):
         logger.info( 'game start')
-        self.game_start()
-        # start a new thread to handle the duaration time of the 21 game
-        thread.start_new_thread(game_end_control, (self.game_duaration, self))
+        game21.game_start()
+        # reset the timer to control time out
+        self.timer_timeout.reset_timer(self.expires + self.game_duaration)
 
-    def game_start(self):
-        self.winner = None
-        self.answers = []
-        self.game_in = True
+
+class Game21(object):
+
+    def __init__(self):
         random.seed()
         self.numbers = [random.randint(1,9) for i in range(4)]
         self.numbers.sort()
-        message = "system: The 21 game will start, you should use the following four numbers, +, -, *, /, " \
-                  "and parenthesis to make the result of the expression is 21," \
-                  " if it can't be equal to 21, the largest number less than 21 will win game. \n " \
-                  "the four numbers are: %d   %d   %d   %d \n " \
-                  "you can use /21GAME <expression> to answer this question" \
-                  %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3])
-        for _, connector in connectors.iteritems():
-            connector.send_message(message)
+        self.game_in = True
+        self.patter = '\D+'
+        self.answers = []
+        self.answered_username = set()
+        self.winner = None
 
+    def process_answer(self, expression, conn, username):
+        if (self.check_message(expression, conn, username)):
+            try:
+                ans = eval(expression)
+                if ans ==21:
+                    # right answer
+                    self.game_in = False
+                    self.winner = username
+                    for _, connector in connectors.items():
+                        connector.send_message('system: ' + self.winner + ' win the game, game over. his answer is: ' + expression)
+                elif ans > 21:
+                    # if the answer over 21, it will be treat as bad ansert
+                    self.answered_username.add(username)
+                else:
+                    # not right answer, store it
+                    self.answers.append((ans, username, expression))
+                    self.answered_username.add(username)
+            except Exception, e:
+                conn.send_message('system: wrong input, the error is %s' %repr(e))
 
-    def process_answer_callback(self, message, username):
-        expression, conn = self.check_message(message, username)
-        if expression is None:
-            return
-        try:
-            ans = eval(expression)
-            if ans ==21:
-                # right answer
-                self.game_in = False
-                self.winner = username
-                for _, connector in connectors.items():
-                    connector.send_message('system: ' + self.winner + ' win the game, game over. his answer is: ' + expression)
-            elif ans > 21:
-                # if the answer over 21, it will be treat as bad ansert
-                self.answered_username.add(username)
-            else:
-                # not right answer, store it
-                self.answers.append((ans, username, expression))
-                self.answered_username.add(username)
-        except Exception, e:
-            conn.send_message('system: wrong input, the error is %s' %repr(e))
+    def check_message(self, expression, conn, username):
+        if not self.game_in:
+            conn.send_message('system: there is no game in, the next game will start at '
+                              + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(self.expires)))
+            return False
+        numbers =[int(i) for i in re.split(self.patter, expression)]
+        numbers.sort()
+        if(self.numbers != numbers):
+            conn.send_message('system: wrong input, the four number are: %d   %d   %d   %d' %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3]))
+        for ch in expression:
+            # check if contains operator other than + - * /
+            if not (ch.isdigit() or (ch in '+-*/') ):
+                conn.send_message('system: wrong input, the right fromat samples: /21GAME 1+2/3*4')
+                return False
+        return True
 
     def game_time_out(self):
         # time out and no anaser are equal to 21
@@ -504,36 +416,21 @@ class Game21Timer(TaskTimer):
         for _, connector in connectors.items():
             connector.send_message('system: ' + self.winner + ' win the game, his answer is ' + rank[0][2])
 
-    def check_message(self, message, username):
-        li = message.split(' ', 1)
-        conn = connectors.get(username)
-        if conn is None:
-            logger.error("can't find username in connectors")
-            return None, conn
-        if len(li) != 2:
-            conn.send_message('system: you should input your answer by format of "/21GAME <expression>"')
-            return None, conn
-        if not self.game_in:
-            conn.send_message('system: there is no game in, the next game will start at '
-                              + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(self.expires)))
-            return None, conn
-        expression = li[1]
-        numbers =[int(i) for i in re.split(self.patter, expression)]
-        numbers.sort()
-        if(self.numbers != numbers):
-            conn.send_message('system: wrong input, the four number are: %d   %d   %d   %d' %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3]))
-        for ch in expression:
-            # check if contains operator other than + - * /
-            if not (ch.isdigit() or (ch in '+-*/') ):
-                conn.send_message('system: wrong input, the right fromat samples: /21GAME 1+2/3*4')
-                return None, conn
-        return expression, conn
-
-
-def game_end_control(tseconds, obj):
-    # to cotrol the game duaration
-    time.sleep(tseconds)
-    obj.game_time_out()
+    def game_start(self):
+        self.winner = None
+        self.answers = []
+        self.game_in = True
+        random.seed()
+        self.numbers = [random.randint(1,9) for i in range(4)]
+        self.numbers.sort()
+        message = "system: The 21 game will start, you should use the following four numbers, +, -, *, /, " \
+                  "and parenthesis to make the result of the expression is 21," \
+                  " if it can't be equal to 21, the largest number less than 21 will win game. \n " \
+                  "the four numbers are: %d   %d   %d   %d \n " \
+                  "you can use /21GAME <expression> to answer this question" \
+                  %(self.numbers[0], self.numbers[1], self.numbers[2], self.numbers[3])
+        for _, connector in connectors.iteritems():
+            connector.send_message(message)
 
 
 class Room(object):
@@ -563,16 +460,75 @@ class Room(object):
                 conn.send_message(message)
 
 
-class HeartBeat(TaskTimer):
+class HeartBeat(event_loop.TaskTimer):
 
     def __init__(self, expires, period, heart_beat_max):
-        TaskTimer.__init__(self, expires, period)
+        event_loop.TaskTimer.__init__(self, expires, period)
         self.heart_beat_max = heart_beat_max
 
     def callback(self, current):
         for _, connector in connectors.items():
             connector.check_heart_beat(self.heart_beat_max)
 
+class Game21TimeOutTimer(event_loop.TaskTimer2):
+
+    def __init__(self, _expires):
+        event_loop.TaskTimer2.__init__(self, _expires)
+
+    def callback(self, current):
+        game21.game_time_out()
+
+# rooms
+rooms = {}
+
+# 21 game
+game21 = Game21()
+
+# stroe the connections, name: connector
+connectors = {}
+
+#available timer task, store the timers
+available_timers = []
+
+# relationship of username and room
+username_to_room = {}
+
+# the logger
+logger = log_config(True)
+
+def main():
+    logger.info('server start!')
+    loop = event_loop.EventLoop()
+    accepter = Accpter(config.SERVER_IP, config.SERVER_PORT, loop)
+    loop.add_event(accepter)
+    first_expires = config.GAME21_EXPIRES
+    if first_expires is None:
+        t = time.localtime()
+        t2 = time.struct_time((t.tm_year,
+                              t.tm_mon,
+                              t.tm_mday,
+                              t.tm_hour+1,
+                              0,
+                              0,
+                              t.tm_wday,
+                              t.tm_yday,
+                              t.tm_isdst
+        ))
+        first_expires = time.mktime(t2)
+    # add timer to control 21 game time out
+    game_time_out_timer = Game21TimeOutTimer(0)
+    loop.add_timer(game_time_out_timer)
+    # add 21 game timer to event loop
+    game_timer = Game21Timer(first_expires, config.GAME21_PERIOD, config.GAME21_DUARATION, game_time_out_timer)
+    loop.add_timer(game_timer)
+    # add heart beat timer to event loop
+    heart_beat_timer = HeartBeat(time.time(), 3, 10)
+    loop.add_timer(heart_beat_timer)
+    try:
+        # start the event loop
+        loop.loop()
+    finally:
+        accepter.close()
 
 if __name__ == '__main__':
     main()

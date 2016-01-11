@@ -86,16 +86,6 @@ def main():
     loop.add_event(cmdline)
     loop.add_timer(HeartBeat(connector, time.time()+3, 3, 10))
     loop.loop()
-    # for i in range(1):
-    #     connector.sock.send('c', socket.MSG_OOB)
-    #     time.sleep(1)
-    #     print connector.sock.recv(1024, socket.MSG_OOB)
-    #     time.sleep(1)
-    #     connector.sock.close()
-    #     time.sleep(1)
-    #     #print connector.sock.recv(1024)
-    #     #connector.sock.send('cxbd')
-    #     #print connector.sock.recv(1024)
 
 
 if __name__ == '__main__':
