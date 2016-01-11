@@ -92,6 +92,8 @@ class Connector(event_loop.Event):
     def readable(self):
         return True
 
+
+
     def writable(self):
         return len(self.obuffer) > 0
 
