@@ -85,6 +85,18 @@ class HeartBeat(event_loop.TaskTimer):
 
 
 def main():
+    argvs  = sys.argv
+    print argvs
+    if(len(argvs) == 1):
+        server_ip = config.serverip
+        server_port = config.serverport
+    elif (len(argvs) == 3):
+        server_ip = argvs[1]
+        server_port = int(argvs[2])
+    else:
+        print 'usage:\n' \
+              'python client.py ip port     use the assigned ip and port\n' \
+              'python client.py             use configure in config.py\n'
     loop = event_loop.EventLoop()
     connector = Connector(config.serverip, config.serverport, loop)
     cmdline = CommandLineClient(connector, sys.stdin, loop)

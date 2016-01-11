@@ -18,7 +18,7 @@ import event_loop
 def log_config(on_terminal):
     #config the logger
     FORMAT = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
-    logging.basicConfig(level=logging.DEBUG,format=FORMAT, filename="server.log", filemode='w')
+    logging.basicConfig(level=logging.DEBUG,format=FORMAT, filename="server.log", filemode='w+')
     logger = logging.getLogger("server_log")
     if on_terminal is True:
         # control need to print log on terminal
@@ -53,6 +53,7 @@ class Connector(event_loop.Event):
                             '/QUITROOM                               quit room\n' \
                             '/CHATROOM                               send message to room\n' \
                             '/21GAME expression                      answer the 21 game\n' \
+                            '/GETONLINETIME                          get you online time\n'
 
     def handle_read_event(self):
         try:
@@ -132,6 +133,8 @@ class Connector(event_loop.Event):
             self.chat_to_room(message)
         elif self.begin_with(message, '/21GAME '):
             self.game21_process_message(message)
+        elif self.begin_with(message, '/GETONLINETIME'):
+            self.get_online_time(message)
         elif self.begin_with(message, '/'):
             self.send_message(self.help_message)
         else:
@@ -157,7 +160,7 @@ class Connector(event_loop.Event):
         for _, connector in connectors.items():
             connector.send_message('system:' + self.name + ' quit!')
         self.send_message('system: ' + self.name + ' bye bye!')
-        user_info_db.sign_out_user(self.name)
+        user_info_db.update_online_time(self.name)
         self.name = None
 
 
@@ -294,6 +297,14 @@ class Connector(event_loop.Event):
             self.send_message('system: command error')
             return
         game21.process_answer(li[1], self, self.name)
+
+    def get_online_time(self, message):
+        # get online time
+        if not self.has_sign_in():
+            self.send_message('system: please sign in first')
+            return
+        ot = user_info_db.get_online_time(self.name)
+        self.send_message('system: you online time is %d seconds.' %ot)
 
 
 
@@ -528,7 +539,7 @@ def main():
     loop.add_timer(heart_beat_timer)
     try:
         # start the event loop
-        loop.loop()
+        loop.loop(config.SELECT_TIME_OUT)
     finally:
         accepter.close()
 

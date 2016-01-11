@@ -1,7 +1,10 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 __author__ = 'xiejun'
 import sqlite3
 import datetime
-import time
+
 class UserInformation(object):
 
     def __init__(self):
@@ -40,7 +43,7 @@ class UserInformation(object):
         else:
             return False
 
-    def sign_out_user(self,username):
+    def update_online_time(self,username):
         sql = 'SELECT signInTime, onLineTime From userInfo WHERE username = "%s" ' %username
         ans = self.dbcursor.execute(sql).fetchone()
         if ans is None:
@@ -77,23 +80,12 @@ def main_test():
     userInfo.sign_up_user('netease1', '123')
     userInfo.sign_up_user('netease2', '123')
     userInfo.sign_up_user('netease3', '123')
-    userInfo.sign_up_user('xiejun2', 'mima')
-    userInfo.sign_in_user('xiejun2', 'mima')
-    time.sleep(1)
-    userInfo.sign_out_user('xiejun2')
-    userInfo.sign_in_user('xiejun2','mima')
-    time.sleep(2)
-    userInfo.sign_out_user('xiejun2')
+    userInfo.sign_up_user('netease4', '123')
+    userInfo.sign_up_user('system', '123')
     # print userInfo.signInUser('xiejun2', 'mima')
     sql = 'SELECT * FROM userInfo'
     ans =  cursor.execute(sql).fetchall()
     print ans
-    print userInfo.get_online_time('xiejun2')
-    # t1 =  time.strptime(ans[0][3], '%Y-%m-%d %H:%M:%S')
-    # t2 = time.strptime(ans[1][3], '%Y-%m-%d %H:%M:%S')
-    #
-    # print t1
-    # print t2
 
 if __name__ == '__main__':
-    print user_info_db.is_exist_user('netease1')
+    main_test()

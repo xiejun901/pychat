@@ -1,6 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 __author__ = 'xiejun'
 
-import time
 # the server address
 SERVER_IP = '0.0.0.0'
 
@@ -27,4 +29,4 @@ GAME21_DUARATION = 30
 
 # the first expires of the 21 game, if it set to None, the game will start after in one minute
 
-GAME21_EXPIRES = time.time() + 15
+GAME21_EXPIRES = None
