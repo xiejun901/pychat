@@ -1,18 +1,15 @@
 __author__ = 'xiejun'
 import socket
-import select
-import config
 import logging
-from userInfomation import user_info_db
 import time
 import random
 import re
 from operator import itemgetter
-import thread
 import errno
-import event_loop
 
-
+import config
+from userInfomation import user_info_db
+from client import event_loop
 
 
 def log_config(on_terminal):
@@ -273,7 +270,7 @@ class Connector(event_loop.Event):
         if room is None:
             self.send_message('system: you are not in any room, please join a room first')
             return
-        room.send_message_to_all(self.name + content)
+        room.send_message_to_all(self.name +': ' + content)
 
 
     def has_sign_in(self, name = None):

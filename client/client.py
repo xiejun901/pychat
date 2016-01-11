@@ -1,10 +1,13 @@
 __author__ = 'xiejun'
 
 import socket
-import event_loop
-import config
 import sys
 import time
+
+import event_loop
+import config
+
+
 class Connector(event_loop.Event):
 
     def __init__(self, host, port, loop):

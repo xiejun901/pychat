@@ -63,9 +63,9 @@ class EventLoop(object):
     def update_timer(self, current):
         # process all timers
         for timer in self.available_timers:
-            while current > timer.expires:
+            while timer.prepare(current):
                 timer.callback(current)
-                timer.expires += timer.period
+                timer.prepare_next()
 
 
 
@@ -104,6 +104,9 @@ class TaskTimer(object):
         self.expires = _expires
         self.period = _period
 
+    def prepare(self, current):
+        return current > self.expires
+
     def callback(self, current):
         """
         timer call back, often need to be override
@@ -111,3 +114,40 @@ class TaskTimer(object):
         :return:
         """
         print('timer happens in' + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(current) ))
+
+    def prepare_next(self):
+        """
+        prepare the next timer
+        """
+        self.expires += self.period
+
+
+class TaskTimer2(object):
+    """
+    timer, only run one time
+    """
+
+    def __init__(self, _expires):
+        self.expires = _expires
+        self.can_run = False
+
+    def reset_timer(self, _expires):
+        self.expires = _expires
+        self.can_run = True
+
+    def prepare(self, current):
+        return current > self.expires and self.can_run
+
+    def callback(self, current):
+        """
+        timer call back, often need to be override
+        :param current:
+        :return:
+        """
+        print('timer happens in' + time.strftime('%d-%b-%Y %H:%M:%S ', time.localtime(current) ))
+
+    def prepare_next(self):
+        """
+        prepare the next timer
+        """
+        self.can_run = False
