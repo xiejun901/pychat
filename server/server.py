@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 __author__ = 'xiejun'
 import socket
 import logging
@@ -9,7 +12,7 @@ import errno
 
 import config
 from userInfomation import user_info_db
-from client import event_loop
+import event_loop
 
 
 def log_config(on_terminal):
